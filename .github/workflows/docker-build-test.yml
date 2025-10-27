@@ -64,6 +64,7 @@ jobs:
         
     - name: Push to Docker Hub
       run: |
+        echo "Pushing image to Docker Hub..."
         docker push shivajiburle/qr_codemaker:latest
-        echo Successfully pushed to Docker Hub!"
-        echo " All tests passed - 100% success!"
+        echo "✅ Successfully pushed to Docker Hub!"
+        echo "🎉 All tests passed - 100% success!"
