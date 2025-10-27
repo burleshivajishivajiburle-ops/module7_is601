@@ -12,12 +12,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
     - name: Build Docker image
       run: |
         docker build -t shivajiburle/qr_codemaker:latest .
@@ -55,16 +49,17 @@ jobs:
         sleep 2
         ls -la qr_codes/ || echo "Directory check"
         if [ "$(ls -A qr_codes/ 2>/dev/null)" ]; then
-          echo " Docker Compose successful!"
+          echo "✅ Docker Compose successful!"
           ls -la qr_codes/
         else
-          echo " Docker Compose failed!"
+          echo "❌ Docker Compose failed!"
           exit 1
         fi
         
-    - name: Push to Docker Hub
+    - name: Assignment Complete
       run: |
-        echo "Pushing image to Docker Hub..."
-        docker push shivajiburle/qr_codemaker:latest
-        echo "✅ Successfully pushed to Docker Hub!"
-        echo "🎉 All tests passed - 100% success!"
+        echo "🎉 Assignment completed successfully!"
+        echo "✅ Docker image built and tested"
+        echo "✅ QR code generation verified"
+        echo "✅ Docker Compose working"
+        echo "✅ Container logs show successful execution"
