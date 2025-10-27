@@ -34,10 +34,10 @@ jobs:
         sleep 2
         ls -la qr_codes/ || echo "Directory check"
         if [ "$(ls -A qr_codes/ 2>/dev/null)" ]; then
-          echo "✅ QR code generation successful!"
+          echo " QR code generation successful!"
           ls -la qr_codes/
         else
-          echo "❌ No QR code generated!"
+          echo " No QR code generated!"
           exit 1
         fi
         
@@ -45,7 +45,7 @@ jobs:
       run: |
         rm -rf qr_codes/*.png || true
         mkdir -p qr_codes
-        docker-compose up --build --abort-on-container-exit
+        docker compose up --build --abort-on-container-exit
         echo "Docker Compose test completed"
         
     - name: Verify Docker Compose result
@@ -53,15 +53,15 @@ jobs:
         sleep 2
         ls -la qr_codes/ || echo "Directory check"
         if [ "$(ls -A qr_codes/ 2>/dev/null)" ]; then
-          echo "✅ Docker Compose successful!"
+          echo " Docker Compose successful!"
           ls -la qr_codes/
         else
-          echo "❌ Docker Compose failed!"
+          echo " Docker Compose failed!"
           exit 1
         fi
         
     - name: Push to Docker Hub
       run: |
         docker push shivajiburle/qr_codemaker:latest
-        echo "✅ Successfully pushed to Docker Hub!"
-        echo "🎉 All tests passed - 100% success!"
+        echo Successfully pushed to Docker Hub!"
+        echo " All tests passed - 100% success!"
