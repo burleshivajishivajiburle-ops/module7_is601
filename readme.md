@@ -3,10 +3,10 @@
 # GitHub Repositiry
 
 ## My Github Repository
-![GitHub Repo]( /qr_codes\QRCode_20251027184047.png "My QR Code Link")
+![GitHub Repo](qr_codes/QRCode_20251027184047.png "My QR Code Link")
 
 ## My DockerHub Image
-![Docker QR Image](/qr_codes\QRCode_20251027183341.png "My QR Code Link")
+![Docker QR Image](qr_codes/QRCode_20251027183341.png "My QR Code Link")
 
 
 # screenshot of logs 
