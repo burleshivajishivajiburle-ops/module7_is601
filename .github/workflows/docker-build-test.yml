@@ -26,6 +26,7 @@ jobs:
     - name: Test Docker image
       run: |
         mkdir -p qr_codes
+        chmod 777 qr_codes
         docker run --rm -v $(pwd)/qr_codes:/app/qr_codes shivajiburle/qr_codemaker:latest --url https://github.com/burleshivajishivajiburle-ops
         echo "Container test completed"
         
@@ -45,6 +46,7 @@ jobs:
       run: |
         rm -rf qr_codes/*.png || true
         mkdir -p qr_codes
+        chmod 777 qr_codes
         docker compose up --build --abort-on-container-exit
         echo "Docker Compose test completed"
         
