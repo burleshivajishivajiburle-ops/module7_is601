@@ -30,6 +30,16 @@ jobs:
         docker run --rm -v $(pwd)/qr_codes:/app/qr_codes shivajiburle/qr_codemaker:latest --url https://github.com/burleshivajishivajiburle-ops
         echo "Container test completed"
         
+    - name: Run container in detached mode and show logs
+      run: |
+        echo "Running container in detached mode..."
+        docker run -d --name qr-generator -v $(pwd)/qr_codes:/app/qr_codes shivajiburle/qr_codemaker:latest --url https://github.com/burleshivajishivajiburle-ops
+        sleep 3
+        echo "=== Container Logs ==="
+        docker logs qr-generator
+        echo "=== End of Container Logs ==="
+        docker rm -f qr-generator
+        
     - name: Verify QR code generation
       run: |
         sleep 2
@@ -69,6 +79,6 @@ jobs:
         docker tag shivajiburle/qr_codemaker:latest shivajiburle/qr_codemaker:latest
         # Push to Docker Hub (this will auto-create the repository)
         docker push shivajiburle/qr_codemaker:latest
-        echo "✅ Successfully pushed to Docker Hub!"
-        echo "📦 Image available at: https://hub.docker.com/r/shivajiburle/qr_codemaker"
-        echo "🎉 All tests passed - 100% success!"
+        echo " Successfully pushed to Docker Hub!"
+        echo " Image available at: https://hub.docker.com/r/shivajiburle/qr_codemaker"
+        echo " All tests passed - 100% success!"
