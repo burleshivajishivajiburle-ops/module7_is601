@@ -1,0 +1,67 @@
+name: Build and Test Docker Image
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+    - name: Build Docker image
+      run: |
+        docker build -t shivajiburle/qr_codemaker:latest .
+        echo "Build completed successfully"
+        
+    - name: Test Docker image
+      run: |
+        mkdir -p qr_codes
+        docker run --rm -v $(pwd)/qr_codes:/app/qr_codes shivajiburle/qr_codemaker:latest --url https://github.com/burleshivajishivajiburle-ops
+        echo "Container test completed"
+        
+    - name: Verify QR code generation
+      run: |
+        sleep 2
+        ls -la qr_codes/ || echo "Directory check"
+        if [ "$(ls -A qr_codes/ 2>/dev/null)" ]; then
+          echo "✅ QR code generation successful!"
+          ls -la qr_codes/
+        else
+          echo "❌ No QR code generated!"
+          exit 1
+        fi
+        
+    - name: Test Docker Compose
+      run: |
+        rm -rf qr_codes/*.png || true
+        mkdir -p qr_codes
+        docker-compose up --build --abort-on-container-exit
+        echo "Docker Compose test completed"
+        
+    - name: Verify Docker Compose result
+      run: |
+        sleep 2
+        ls -la qr_codes/ || echo "Directory check"
+        if [ "$(ls -A qr_codes/ 2>/dev/null)" ]; then
+          echo "✅ Docker Compose successful!"
+          ls -la qr_codes/
+        else
+          echo "❌ Docker Compose failed!"
+          exit 1
+        fi
+        
+    - name: Push to Docker Hub
+      run: |
+        docker push shivajiburle/qr_codemaker:latest
+        echo "✅ Successfully pushed to Docker Hub!"
+        echo "🎉 All tests passed - 100% success!"
