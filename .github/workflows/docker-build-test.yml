@@ -4,10 +4,6 @@ on:
   push:
     branches: [ master ]
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -16,32 +12,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      
-    - name: Log in to GitHub Container Registry
+    - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ghcr.io/${{ github.repository_owner }}/qr_codemaker:latest
+    - name: Build Docker image
+      run: |
+        docker build -t shivajiburle/qr_codemaker:latest .
+        echo "Build completed successfully"
         
     - name: Test Docker image
       run: |
         mkdir -p qr_codes
         chmod 777 qr_codes
-        docker run --rm -v $(pwd)/qr_codes:/app/qr_codes ghcr.io/${{ github.repository_owner }}/qr_codemaker:latest --url https://github.com/burleshivajishivajiburle-ops
+        docker run --rm -v $(pwd)/qr_codes:/app/qr_codes shivajiburle/qr_codemaker:latest --url https://github.com/burleshivajishivajiburle-ops
         echo "Container test completed"
         
     - name: Verify QR code generation
@@ -69,17 +55,20 @@ jobs:
         sleep 2
         ls -la qr_codes/ || echo "Directory check"
         if [ "$(ls -A qr_codes/ 2>/dev/null)" ]; then
-          echo "✅ Docker Compose successful!"
+          echo " Docker Compose successful!"
           ls -la qr_codes/
         else
-          echo "❌ Docker Compose failed!"
+          echo " Docker Compose failed!"
           exit 1
         fi
         
-    - name: Assignment Complete
+    - name: Push to Docker Hub
       run: |
-        echo "🎉 Assignment completed successfully!"
-        echo "✅ Docker image built and pushed to GHCR"
-        echo "✅ QR code generation verified"
-        echo "✅ Docker Compose working"
-        echo "✅ Container logs show successful execution"
+        echo "Pushing image to Docker Hub..."
+        # Tag the image properly for Docker Hub
+        docker tag shivajiburle/qr_codemaker:latest shivajiburle/qr_codemaker:latest
+        # Push to Docker Hub (this will auto-create the repository)
+        docker push shivajiburle/qr_codemaker:latest
+        echo "✅ Successfully pushed to Docker Hub!"
+        echo "📦 Image available at: https://hub.docker.com/r/shivajiburle/qr_codemaker"
+        echo "🎉 All tests passed - 100% success!"
