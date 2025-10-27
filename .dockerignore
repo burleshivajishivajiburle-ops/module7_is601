@@ -1,0 +1,15 @@
+__pycache__/
+.env
+*.pyc
+.git
+.github/
+.vscode/
+venv/
+env/
+.pytest_cache/
+*.log
+.DS_Store
+node_modules/
+.gitignore
+README.md
+readme.md
